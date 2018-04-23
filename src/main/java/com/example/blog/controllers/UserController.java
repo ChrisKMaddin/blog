@@ -4,7 +4,6 @@ package com.example.blog.controllers;
 
 import com.example.blog.models.User;
 import com.example.blog.repositories.UsersRepository;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
