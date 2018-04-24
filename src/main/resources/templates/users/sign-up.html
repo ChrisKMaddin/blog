@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: main-header('Sign up!')">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Sign up</title>
 </head>
 <body>
-<div th:replace="fragments/navbar :: mainNavbar"></div>
+
 <h1>Create an account</h1>
+
 <form th:action="@{/sign-up}" method="POST" th:object="${user}">
+
     <label for="username">Username</label>
     <input id="username" th:field="*{username}" />
 
@@ -16,6 +20,7 @@
     <input id="password" type="password" th:field="*{password}" />
 
     <input value="Sign me up!" type="submit" />
+
 </form>
 </body>
 </html>
