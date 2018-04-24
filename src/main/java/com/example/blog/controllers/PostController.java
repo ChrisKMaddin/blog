@@ -1,60 +1,71 @@
-//package com.example.blog.controllers;
-//
-//
-//import com.example.blog.models.Post;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//import com.example.blog.services.PostService;
-//
-//@Controller
-//public class PostController {
-//
-//    PostService postSvc;
-//
-////    private final PostService postService;
-////    private final UsersRepository usersRepository;
-////
-////    public PostController(PostService postService postService, UsersRepository usersRepository) {
-////        this.postService = postService;
-////        this.usersRepository = usersRepository;
-////    }
-//
-//    @GetMapping("/posts")
-//    public String index(Model model) {
-//
-//
-////        List<Post> posts = new ArrayList<>();
-////
-////        posts.add(new Post("Post Title 1", "This is very cool!"));
-////        posts.add(new Post("Post Title 2", "We can use this!"));
-////        posts.add(new Post("Post Title 3", "This is fine..."));
-////        posts.add(new Post("Post Title 4", "Holy Smokes"));
-//
-//        model.addAttribute("post", postSvc.getAllPosts());
-//        return "/posts/index";
-//    }
-//
-//    @GetMapping("/posts/{id}")
-//    public String show(@PathVariable long id, Model model) {
-//        Post post = new Post("Post", "This is a test description.");
-//        model.addAttribute("post", postSvc.getAllPosts());
-//        return "/posts/show";
-//    }
-//
-//    @GetMapping("/posts/create")
-//    @ResponseBody
-//    public String create() {
-//        return "Here is the post create form...";
-//    }
-//
-//    @PostMapping("/posts/create")
-//    @ResponseBody
-//    public String insert() {
-//        return "Inserted new post!";
-//    }
-//
-//}
+package com.example.blog.controllers;
+
+
+import com.example.blog.models.Post;
+import com.example.blog.models.User;
+import com.example.blog.repositories.UsersRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import com.example.blog.services.PostService;
+
+@Controller
+public class PostController {
+
+    private UsersRepository userDao;
+    private PostService postSvc;
+
+    public PostController(PostService postService, UsersRepository userDao) {
+        this.postSvc = postService;
+        this.userDao = userDao;
+    }
+
+    @GetMapping("/posts")
+    public String index(Model model) {
+        model.addAttribute("posts", postSvc.findAll());
+        return "posts/index";
+    }
+
+    @GetMapping("/posts/{id}")
+    public String show(@PathVariable long id, Model model) {
+        model.addAttribute("post", postSvc.findOne(id));
+        return "posts/show";
+    }
+
+    @GetMapping("/posts/create")
+    public String create(Model model) {
+        model.addAttribute("post", new Post());
+        return "posts/create";
+    }
+
+    @PostMapping("/posts/create")
+    public String insert(@ModelAttribute Post post) {
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        post.setUser(loggedInUser);
+        postSvc.save(post);
+        return "redirect:/posts";
+    }
+
+    @GetMapping("/posts/{id}/edit")
+    public String edit(@PathVariable long id, Model model) {
+        model.addAttribute("post", postSvc.findOne(id));
+        return "posts/edit";
+    }
+
+    @PostMapping("/posts/{id}/edit")
+    public String update(@PathVariable long id, @ModelAttribute Post post) {
+        Post originalPost = postSvc.findOne(id);
+        originalPost.setTitle(post.getTitle());
+        originalPost.setBody(post.getBody());
+        postSvc.save(originalPost);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("/posts/{id}/delete")
+    public String delete(@PathVariable long id) {
+        postSvc.delete(id);
+        return "redirect:/posts";
+    }
+
+}

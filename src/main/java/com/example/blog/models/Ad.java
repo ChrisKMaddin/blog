@@ -1,6 +1,7 @@
 package com.example.blog.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -11,7 +12,8 @@ public class Ad {
     @GeneratedValue
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
+    @Size(min=1, max=15, message="Ad title must be between 1 and 15 characters long.")
     private String title;
 
     @Column(nullable = false)
