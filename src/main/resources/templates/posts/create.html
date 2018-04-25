@@ -1,38 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="partials/header :: header('Create Post')"></head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header('Create a post')"></head>
 <body>
 
-<div th:replace="partials/navbar :: navbar"></div>
+<div th:replace="fragments/navbar :: navbar"></div>
 
-<main class="container">
-
-    <h1>Create Post</h1>
-
-
-    <form th:action="@{/posts/create}" method="POST" th:object="${post}">
-
-        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" />
-        <div class="form-group">
-            <label for="title">Post Title</label>
-            <input id="title" class="form-control" placeholder="Enter post title" type="text" th:field="*{title}" />
+<div class="container">
+    <div class="row form-wrap">
+        <div class="col l8 offset-l2">
+            <div th:replace="fragments/forms :: postsForm('/posts/create', false)"></div>
         </div>
+    </div>
+</div>
 
-        <p th:if="${#fields.hasErrors('body')}" th:errors="*{body}" />
-        <div class="form-group">
-            <label for="body">Post Body</label>
-            <input id="body" class="form-control" placeholder="Enter post" type="text" th:field="*{body}" />
-        </div>
-
-        <button class="btn btn-large btn-success">Create Post</button>
-
-    </form>
-
-</main>
-
-<div th:replace="partials/footer :: footer"></div>
-
-<div th:replace="partials/scripts :: scripts"></div>
+<div th:replace="fragments/footer :: footer"></div>
 
 </body>
 </html>

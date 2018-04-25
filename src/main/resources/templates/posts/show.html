@@ -1,17 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="partials/header :: header('Post Show Page')"></head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header(${post.title})"></head>
 <body>
 
-<div th:replace="partials/navbar :: navbar"></div>
+<div th:replace="fragments/navbar :: navbar"></div>
 
-<main class="container">
-    <h1>Post</h1>
+<div class="container">
+    <div class="row">
+        <div class="col l8 offset-l2">
+            <div>
+                <form class="right" th:method="POST" th:action="@{/posts/delete}">
+                    <input type="hidden" name="id" th:value="${post.id}" />
+                    <span th:if="${isOwner}">
+                    <a class="btn btn-floating" th:href="@{ /posts/{id}/edit(id=${post.id}) }">
+                        <i class="material-icons">edit</i>
+                    </a>
+                    <button class="btn btn-floating deep-orange darken-4">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </span>
+                </form>
+                <h3 th:text="${post.title}"></h3>
+                <br/>
+                <img th:if="${post.imageUrl == ''}" class="responsive-img" src="http://placehold.it/500x500" alt="placeholder" />
 
-    <h3><span th:text="${post.title}"></span></h3>
-    <p><span th:text="${post.body}"></span></p>
-</main>
+                <img class="responsive-img" th:if="${post.imageUrl != ''}" th:src="${'/uploads/' +post.imageUrl}" width="500px" height="500px;" />
 
-<div th:replace="partials/footer :: footer"></div>
+                <p th:text="${post.body}"></p>
+                <hr/>
+                <p>
+                    <b>Tags: </b>
+                    <br/>
+                    <br/>
+                    <span class="btn blue-grey darken-2 tags chip white-text" th:each="tag : ${post.tags}" th:text="${tag.name}"></span>
+                </p>
+                <b>
+                    <p>Posted by <a th:href="@{ /users/{id} (id=${post.user.id}) }" th:text="${post.user.email}">some user</a> on <span th:text="${#dates.format(post.createDate,'MMM dd YYYY')}"></span>
+                    </p>
+                </b>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
 </body>
 </html>

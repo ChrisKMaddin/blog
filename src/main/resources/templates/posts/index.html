@@ -1,26 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="partials/header :: header('Posts')"></head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header('Blog posts')"></head>
 <body>
-
-<div th:replace="partials/navbar :: navbar"></div>
-
-<form th:action="@{/logout}" th:method="post">
-    <button class="btn" style="margin-top: 8px">Logout</button>
-</form>
-
-<main class="container">
-
-    <h1>Posts</h1>
-
-    <div th:each="post : ${posts}">
-        <h3><span th:text="${post.title}"></span></h3>
-        <p><span th:text="${post.body}"></span></p>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+    <h3 class="title center">Blog posts</h3>
+    <div class="row">
+        <div id="postsContainer" class="col s10 offset-s1">
+            <div th:replace="fragments/posts-feed :: feed"></div>
+        </div>
+        <br/>
     </div>
+    <!--Content-->
+</div>
+<!--container-->
 
-</main>
-
-<div th:replace="partials/footer :: footer"></div>
+<div th:replace="fragments/footer :: footer"></div>
 
 </body>
 </html>
