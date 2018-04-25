@@ -11,11 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private UserDetailsLoader userDetailsLoader;
 
-    private UserDetailsLoader usersLoader;
-
-    public SecurityConfiguration(UserDetailsLoader usersLoader) {
-        this.usersLoader = usersLoader;
+    public SecurityConfiguration(UserDetailsLoader userDetailsLoader) {
+        this.userDetailsLoader = userDetailsLoader;
     }
 
     @Bean
@@ -26,7 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(usersLoader) // How to find users by their username
+                .userDetailsService(userDetailsLoader) // How to find users by their username
                 .passwordEncoder(passwordEncoder()) // How to encode and verify passwords
         ;
     }
@@ -38,21 +37,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/posts") // user's home page, it can be any URL
-                .permitAll() // Anyone can go to the login page
-                /* Logout configuration */
+                .permitAll()
                 .and()
                 .logout()
                 .logoutSuccessUrl("/login?logout") // append a query string value
-                .permitAll()
                 /* Pages that can be viewed without having to log in */
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/posts", "/register")
+                .antMatchers("/", "/ads") // anyone can see the home and the ads pages
                 .permitAll()
                 /* Pages that require authentication */
                 .and()
                 .authorizeRequests()
-                .anyRequest()
+                .antMatchers(
+                        "/posts/create", // only authenticated users can create ads
+                        "/posts/{id}/edit", // only authenticated users can edit ads
+                        // We're adding these 2 lines in order to get the User from the security
+                        // context in the AdController, otherwise `getPrincipal()` might return
+                        // a string instead of a User
+                        "/ads/new",
+                        "/ads/create"
+                )
                 .authenticated()
         ;
     }

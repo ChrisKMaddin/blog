@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header('Create a post')"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: main-header('New Post')">
+</head>
 <body>
-
-<div th:replace="fragments/navbar :: navbar"></div>
-
-<div class="container">
-    <div class="row form-wrap">
-        <div class="col l8 offset-l2">
-            <div th:replace="fragments/forms :: postsForm('/posts/create', false)"></div>
-        </div>
-    </div>
-</div>
-
-<div th:replace="fragments/footer :: footer"></div>
-
+<div th:replace="fragments/navbar :: mainNavbar"></div>
+<form action="/posts/create" method="post" th:object="${post}" >
+    Title:
+    <input th:field="*{title}" />
+    <br />
+    Description:
+    <input th:field="*{body}" />
+    <br />
+    <input type="submit" />
+</form>
+<footer th:include="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scripts"></div>
 </body>
 </html>

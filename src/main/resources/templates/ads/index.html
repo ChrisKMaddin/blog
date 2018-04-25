@@ -1,37 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="partials/header :: header('Ads')"></head>
+<head th:replace="fragments/header :: main-header('Sign up!')">
+</head>
 <body>
-
-<div th:replace="partials/navbar :: navbar"></div>
-
-<main class="container">
-
-    <h1>Ads</h1>
-
-    <div th:each="ad : ${ads}">
-
-        <!-- This is how you use the one to many -->
-        <div th:each="image : ${ad.images}">
-            <img width="50%" th:src="${image.path}" />
-        </div>
-
-        <h3><span th:text="${ad.title}"></span></h3>
-        <p><span th:text="${ad.description}"></span></p>
-
-        <p><span th:text="${'$ ' + ad.adDetails.price + '0'}"></span></p>
-        <p><span th:text="${ad.adDetails.location}"></span></p>
-
-        <!-- This is how you use the one to one -->
-        <p th:text="${ad.user.email}"></p>
-
-        <span th:each="category : ${ad.categories}" th:text="${category.name + ', '}"></span>
-
-    </div>
-
-</main>
-
-<div th:replace="partials/footer :: footer"></div>
-
+<div th:replace="fragments/navbar :: mainNavbar"></div>
+<div th:each="ad : ${ads}">
+    <h1 th:text="${ad.title}"></h1>
+    <p th:text="${ad.description}"></p>
+</div>
 </body>
 </html>

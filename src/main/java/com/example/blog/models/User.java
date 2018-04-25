@@ -1,49 +1,42 @@
 package com.example.blog.models;
 
 import javax.persistence.*;
-
-
+import java.util.List;
 
 @Entity
-@Table(name = "users")
 public class User {
-
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
-
-    @Column(nullable = false, unique = true)
-    private String email;
 
     @Column(nullable = false)
     private String password;
 
-    public User(User copy) {
-        this.id = copy.id;
-        this.username = copy.username;
-        this.email = copy.email;
-        this.password = copy.password;
-    }
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    // This is useful to insert users
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
+    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    //private List<Post> posts;
 
-    // This is useful to get a full user obj
-    public User(long id, String username, String email, String password) {
+    @OneToMany(mappedBy = "owner")
+    private List<Ad> ads;
+
+    public User(String username, String password, String email) {
         this.username = username;
-        this.email = email;
         this.password = password;
-        this.id = id;
+        this.email = email;
     }
 
     public User() {
+    }
+
+    public User(User copy) {
+        id = copy.id; // This line is SUPER important! Many things won't work if it's absent
+        email = copy.email;
+        username = copy.username;
+        password = copy.password;
     }
 
     public long getId() {
@@ -62,6 +55,14 @@ public class User {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -70,11 +71,18 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    /*public List<Post> getPosts() {
+        return posts;
+    }
+    pu*//*blic void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }*/
+
+    public List<Ad> getAds() {
+        return ads;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAds(List<Ad> ads) {
+        this.ads = ads;
     }
 }
